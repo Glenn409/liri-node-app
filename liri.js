@@ -4,10 +4,13 @@ const keys = require("./keys.js");
 var Spotify = require('node-spotify-api');
 const spotify = new Spotify(keys.spotify);
 const axios = require('axios');
+var moment = require('moment')
 
 const operation = process.argv[2];
-const search = process.argv[3];
-
+let search = process.argv;
+//set it up so if a search had multiple words it would be turned into one string without using quotations
+search.splice(0,3);
+search = search.join(' ');
 
 //starting function to start LIRI BOT - determines what the users wants to do
 switch(operation){
@@ -15,6 +18,7 @@ switch(operation){
         liriControl(operation,search);
         break;
     case 'concert-this':
+        liriControl(operation,search);
         break;
     case 'movie-this':
         liriControl(operation,search);
@@ -24,7 +28,7 @@ switch(operation){
 }
 //makes sures user puts in a value
 function checkSearch(search){
-    if(search === undefined){
+    if(search === undefined || search === ''){
         return true;
     } else return false;
 }
@@ -35,30 +39,75 @@ function liriControl(operation,input){
     switch(operation){
         case 'spotify-this-song':
                 if(checkSearch(input) === false){
-                    console.log(`\nSearching for song called: ${input}!\n`)
                     searchSpotify(input);
                 } else {
-                    console.log('\nLIRI BOT Detected no Song input!! LIRI BOT searching my favorite Song Instead')
-                    console.log('\nSearching: "Highest in the room" by Travis Scott\nPlease Select - Travis Scott <3\n')
-                    searchSpotify('Highest in the Room');
+                    console.log("\nLIRI BOT Detected no Song input! LIRI BOT searching LIRI BOT's favorite Song Instead.")
+                    console.log('\nSearching song! Be Prepared To DANCE!')
+                    searchSpotify('Africa - 8-Bit Toto Emulation');
                 }
                 break;
         case 'movie-this':
             searchMovie(input);
             break;
+        case 'concert-this':
+            if(checkSearch(input) === false){
+                searchConcert(input);
+            } else {
+                console.log("\nLIRI BOT Detected no input! LIRI BOT searching LIRI BOT's favorite artist.")
+                console.log('\nLIRI BOT submitting favorite band.')
+                searchConcert('marshmellow');
+            }
+            break;
     }
 }
+
+//searches the bands in town api 
+function searchConcert(search){
+    axios.get(`https://rest.bandsintown.com/artists/${search}/events?app_id=codingbootcamp`)
+    .then(function(res){
+        console.log(`\nSearching for a venue for ${search}!`);
+        var date = res.data[0].datetime;
+        date = moment(date).format('MM/DD/YYYY');
+        console.log('\nVenue: '+ res.data[0].venue.name)
+        console.log('Location: '+ (res.data[0].venue.city)+', '+ (res.data[0].venue.country));
+        console.log('Date: ' + date);
+        searchAgain();
+    }).catch(function(err){
+        console.log('LIRI BOT detected a ERROR!\n')
+        inquire.prompt([
+            {
+                type:'input',
+                name: 'newSearch',
+                message:`LIRI BOT recieved no results for ${search}\nSeach another Band: `
+            }
+        ]).then(function(data){
+           liriControl('concert-this',data.newSearch);
+        })
+    })
+}
+
 //searches song and returns result to user
 function searchMovie(search){
+    console.log(`\nSearching for the movie called: ${search}`);
+
     axios.get(`http://www.omdbapi.com/?t=${search}&apikey=${process.env.OMDB_APIKEY}`)
     .then(function(res){
-        console.log(res.data);
+        var movieData = res.data;
+        console.log(`\n---Results---\nTitle: ${movieData.Title}\nYear: ${movieData.Year}\n` +
+        `Ratings:\n - ${movieData.Ratings[0].Source}: ${movieData.Ratings[0].Value}\n - ${movieData.Ratings[1].Source}: ${movieData.Ratings[1].Value}` +
+        `\nCountry: ${movieData.Country}\nLanguage: ${movieData.Language}\nPlot: ${movieData.Plot}\nActors: ${movieData.Actors}\n`);
+        searchAgain();
+    })
+    .catch(function(err){
+        console.log('LIRI BOT detected a ERROR!\n')
+        console.log("LIRI BOT subbmitting LIRI BOT's favorilte movie.")
+        searchMovie('WALL-E')
     })
 }
 //searches song and returns result to user
 function searchSpotify(search){
     const results = [];
-
+    console.log(`\nSearching for song called: ${search}!\n`)
     spotify.search({
         type:'track',
         query: search,
@@ -67,11 +116,10 @@ function searchSpotify(search){
             console.log(err);
         }
         const trackData = data.tracks.items;
-        
         for (var i = 0; i < trackData.length;i++){
             const obj = {
                 name: trackData[i].album.artists[0].name,
-                preview: trackData[i].album.artists[0].external_urls.spotify,
+                preview: trackData[i].preview_url,
                 album: trackData[i].album.name,
                 song: trackData[i].name
             }
@@ -100,7 +148,7 @@ function chooseSpotifyResults(array){
             {
                 type: 'list',
                 name: 'choice',
-                message: "We found multiple results, Pick a result!",
+                message: "LIRI BOT found multiple results, Pick the Artist you were searching for!",
                 choices: choicesNames
             }
         ]).then(function(data){
@@ -146,7 +194,7 @@ function searchAgain(){
                         type:'list',
                         name:'operation',
                         message:'Which database would you like to search today?',
-                        choices: ['spotify-this-song']
+                        choices: ['spotify-this-song','movie-this','concert-this']
                     },
                     {
                         type: 'input',
@@ -162,4 +210,11 @@ function searchAgain(){
             }
             
         })
+}
+
+//Checks dates from bandsintowns api to see if event already passed, only want to post future events
+function didEventAlrdyOccur(event){
+    var currentDate = moment();
+    console.log('event time: ' + event)
+    console.log('current time: ' + currentDate);
 }
