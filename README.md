@@ -5,10 +5,10 @@ LIRI BOT
 - LIRI BOT uses
     - node.js
     - javascript
-    - [Axios](https://www.npmjs.com/package/axios)
-    - [moment.js](https://momentjs.com/)
-    - [file-system](https://www.npmjs.com/package/file-system)
-    - [DotEnv](https://www.npmjs.com/package/dotenv)
+    - [Axios](https://www.npmjs.com/package/axios/?target=_blank)
+    - [moment.js](https://momentjs.com//?target=_blank)
+    - [file-system](https://www.npmjs.com/package/file-system/?target=_blank)
+    - [DotEnv](https://www.npmjs.com/package/dotenv/?target=_blank)
 
 - API's used
     - Node-Spotify-APi
@@ -42,5 +42,5 @@ LIRI BOT
 
     9.Open up your terminal and in the directory run 
         - node liri.js (a operation) (input)
-        
-[Link to LIRI BOT demontration](https://drive.google.com/file/d/1GY2B_VnypOGbIEP6aD7YFPvDDFBzAmP0/view)
+
+[Link to LIRI BOT demontration](https://drive.google.com/file/d/1GY2B_VnypOGbIEP6aD7YFPvDDFBzAmP0/view/?target=_blank)
