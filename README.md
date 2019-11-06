@@ -5,17 +5,15 @@ LIRI BOT
 - LIRI BOT uses
     - node.js
     - javascript
-    - [Axios]('https://www.npmjs.com/package/axios)
-    - [moment.js]('https://momentjs.com/)
-    - [file-system]('https://www.npmjs.com/package/file-system)
-    - [DotEnv]('https://www.npmjs.com/package/dotenv)
+    - [Axios](https://www.npmjs.com/package/axios)
+    - [moment.js](https://momentjs.com/)
+    - [file-system](https://www.npmjs.com/package/file-system)
+    - [DotEnv](https://www.npmjs.com/package/dotenv)
 
 - API's used
     - Node-Spotify-APi
     - OMDB
     - Bands In Town
-
-Running LIRI BOT on your own pc.
 
 -In order to run LIRI BOT on your own pc. you need to follow a few simple steps.
 
