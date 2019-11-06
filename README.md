@@ -1,6 +1,6 @@
 LIRI BOT
 
-- LIRI BOT is a basic node application that makes api calls to spotify, OMDB, or Bandsintown and returns results based on your search.
+- LIRI BOT is a basic node application that makes api calls to spotify, OMDB, or Bandsintown and returns results based on your search. Then saves all results inside a log.txt file.
 
 - LIRI BOT uses
     - node.js
