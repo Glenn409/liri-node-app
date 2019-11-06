@@ -5,11 +5,12 @@ var Spotify = require('node-spotify-api');
 const spotify = new Spotify(keys.spotify);
 const axios = require('axios');
 var moment = require('moment')
+var fs = require('fs');
 
 const operation = process.argv[2];
 let search = process.argv;
 //set it up so if a search had multiple words it would be turned into one string without using quotations
-search.splice(0,3);
+search.splice(0,3); 
 search = search.join(' ');
 
 //starting function to start LIRI BOT - determines what the users wants to do
@@ -24,6 +25,7 @@ switch(operation){
         liriControl(operation,search);
         break;
     case 'do-what-it-says': 
+        doWhatItSays('random.txt');
         break;
 }
 //makes sures user puts in a value
@@ -60,7 +62,33 @@ function liriControl(operation,input){
             break;
     }
 }
-
+//reads file and does what text says it to do
+function doWhatItSays(file){
+    fs.readFile(file,'utf8',function(err,data){
+        if(err){
+            console.log(err);
+        }
+        var array = data.split(',');
+        console.log(array);
+        if(array[0] === 'spotify-this-song' || array[0] === 'movie-this' || array[0] === 'concert-this'){
+            liriControl(array[0],array[1]);
+        }
+    })
+}
+//format for the saved info inside log.txt
+function resultObj(operation,data){
+    var obj = {
+        operation: operation,
+        data:data
+    }
+    return JSON.stringify(obj);
+}
+//function to save all searches and results into a file.
+function appendResults(data){
+    fs.appendFile('log.txt',data + '\r\n',function(err){
+        if(err) throw err;
+    })
+}
 //searches the bands in town api 
 function searchConcert(search){
     axios.get(`https://rest.bandsintown.com/artists/${search}/events?app_id=codingbootcamp`)
@@ -71,8 +99,18 @@ function searchConcert(search){
         console.log('\nVenue: '+ res.data[0].venue.name)
         console.log('Location: '+ (res.data[0].venue.city)+', '+ (res.data[0].venue.country));
         console.log('Date: ' + date);
+        var obj = {
+            band: search,
+            venue: res.data[0].venue.name,
+            location: (res.data[0].venue.city+', '+ res.data[0].venue.country),
+            date: date
+        }
+        var saveData = resultObj('concert-this',obj);
         searchAgain();
+        appendResults(saveData);
+        console.log('Results Saved!\n');
     }).catch(function(err){
+        console.log(err);
         console.log('LIRI BOT detected a ERROR!\n')
         inquire.prompt([
             {
@@ -127,12 +165,10 @@ function searchSpotify(search){
                 results.push(obj);
             }
         }
-        // console.log('-'.repeat(40));
-        // console.log(results);/
-        // console.log('-'.repeat(40));
         chooseSpotifyResults(results);
     })
 };
+
 //uses inquirer for the the user to pick a result in an array
 function chooseSpotifyResults(array){
     var choicesNames = [];
@@ -155,7 +191,10 @@ function chooseSpotifyResults(array){
             console.log(`\nRetrieving song info with the Arist : ${data.choice}!`);
             for(var i = 0; i < array.length; i++){
                 if(array[i].name === data.choice){
+                    var saveData = resultObj('spotify-this-song',array[i]);
                     console.log(`\nSong Name: ${array[i].song}\nArtist Name: ${array[i].name}\nAlbum Name: ${array[i].album}\nPreview URL of song: ${array[i].preview}\n`);
+                    appendResults(saveData);
+                    console.log('Results Saved!\n');
                 }
             }
             searchAgain();
@@ -165,17 +204,13 @@ function chooseSpotifyResults(array){
 
 //prevents duplicate items entering an array
 function arrayCheck(array, appendingObj){
-    // console.log('CURRENT OBJECT', appendingObj)
     let check = false;
     for(i = 0; i < array.length;i++){
-        // console.log(`comparing with the index of ${i}`)
-        // console.log(`comparing ${array[i].name} and ${appendingObj.name}`)
         if(array[i].name === appendingObj.name){
             check = true;
             break;
         }
     }
-    // console.log('returning: ' +check)
     return check;
 }
 
