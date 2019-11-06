@@ -4,3 +4,5 @@
 {"operation":"spotify-this-song","data":{"name":"Jay Hardway","preview":"https://p.scdn.co/mp3-preview/d4250b317cb73fdd470c78127b0fafb878c76bdc?cid=8897251dcbf946d8bba8b58f8b1b290e","album":"Scio","song":"Scio"}}
 {"operation":"spotify-this-song","data":{"name":"Jay Hardway","preview":"https://p.scdn.co/mp3-preview/d4250b317cb73fdd470c78127b0fafb878c76bdc?cid=8897251dcbf946d8bba8b58f8b1b290e","album":"Scio","song":"Scio"}}
 {"operation":"spotify-this-song","data":{"name":"Jay Hardway","preview":"https://p.scdn.co/mp3-preview/d4250b317cb73fdd470c78127b0fafb878c76bdc?cid=8897251dcbf946d8bba8b58f8b1b290e","album":"Scio","song":"Scio"}}
+{"operation":"spotify-this-song","data":{"name":"Jay Hardway","preview":"https://p.scdn.co/mp3-preview/d4250b317cb73fdd470c78127b0fafb878c76bdc?cid=8897251dcbf946d8bba8b58f8b1b290e","album":"Scio","song":"Scio"}}
+{"operation":"concert-this","data":{"band":"luke combs","venue":"SAP Center at San Jose","location":"San Jose, United States","date":"11/06/2019"}}
