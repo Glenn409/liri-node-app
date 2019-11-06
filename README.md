@@ -5,7 +5,7 @@ LIRI BOT
 - LIRI BOT uses
     - node.js
     - javascript
-    - *underline*[Axios](https://www.npmjs.com/package/axios)*underline*
+    - **underline**[Axios](https://www.npmjs.com/package/axios)**underline**
     - *underline*[moment.js](https://momentjs.com/)*underline*
     - *underline*[file-system](https://www.npmjs.com/package/file-system)*underline*
     - *underline*[DotEnv](https://www.npmjs.com/package/dotenv)*underline*
